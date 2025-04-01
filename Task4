@@ -1,0 +1,53 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+
+# Download VADER (if not already installed)
+nltk.download('vader_lexicon')
+
+# Load Twitter dataset (replace with actual file path)
+df = pd.read_csv("twitter_training.csv")
+
+print(df.columns)
+
+# Preview dataset
+print(df.head())
+
+print(df.isna().sum())  # See if there are missing values
+
+
+# Initialize Sentiment Analyzer
+sia = SentimentIntensityAnalyzer()
+
+# Analyze sentiment scores
+df['Borderlands'].apply(lambda x: sia.polarity_scores(x)['compound'])
+
+df['sentiment_score'] = df['Borderlands'].apply(lambda x: sia.polarity_scores(str(x))['compound'])
+print(df[['Borderlands', 'sentiment_score']].head())  # Check if sentiment scores exist
+
+
+
+# Classify sentiment
+df['sentiment'] = df['sentiment_score'].apply(lambda x: 'Positive' if x > 0.05 else ('Negative' if x < -0.05 else 'Neutral'))
+
+# Plot sentiment distribution
+sns.countplot(x='sentiment', data=df, palette="viridis")
+plt.title("Sentiment Distribution")
+plt.show()
+
+# Generate Word Cloud for Positive & Negative Tweets
+positive_words = " ".join(df[df['sentiment'] == 'Positive']['tweet_text'])
+negative_words = " ".join(df[df['sentiment'] == 'Negative']['tweet_text'])
+
+plt.figure(figsize=(12,6))
+plt.subplot(1,2,1)
+plt.imshow(WordCloud(background_color='white').generate(positive_words))
+plt.title("Positive Words")
+
+plt.subplot(1,2,2)
+plt.imshow(WordCloud(background_color='black').generate(negative_words))
+plt.title("Negative Words")
+plt.show()
