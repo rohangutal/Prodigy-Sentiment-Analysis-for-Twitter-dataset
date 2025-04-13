@@ -39,8 +39,8 @@ plt.title("Sentiment Distribution")
 plt.show()
 
 # Generate Word Cloud for Positive & Negative Tweets
-positive_words = " ".join(df[df['sentiment'] == 'Positive']['tweet_text'])
-negative_words = " ".join(df[df['sentiment'] == 'Negative']['tweet_text'])
+positive_words = " ".join(df[df['sentiment'] == 'Positive']['Borderlands']) # Changed 'tweet_text' to 'Borderlands'
+negative_words = " ".join(df[df['sentiment'] == 'Negative']['Borderlands']) # Changed 'tweet_text' to 'Borderlands'
 
 plt.figure(figsize=(12,6))
 plt.subplot(1,2,1)
